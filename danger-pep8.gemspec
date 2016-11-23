@@ -6,8 +6,8 @@ require 'pep8/gem_version.rb'
 Gem::Specification.new do |spec|
   spec.name          = 'danger-pep8'
   spec.version       = Pep8::VERSION
-  spec.authors       = ['Gustavo Barbosa']
-  spec.email         = ['gustavo@loadsmart.com']
+  spec.authors       = ['Gustavo Barbosa', 'Andre Dieb']
+  spec.email         = ['gustavo@loadsmart.com', 'andre@loadsmart.com']
   spec.description   = %q{A Danger plugin for Python's PEP 8.}
   spec.summary       = %q{danger-pep8 verifies if your Pull Request follows the PEP 8 rules.}
   spec.homepage      = 'https://github.com/loadsmart/danger-pep8'

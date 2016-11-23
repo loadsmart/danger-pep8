@@ -1,33 +1,53 @@
 module Danger
-  # This is your plugin class. Any attributes or methods you expose here will
-  # be available from within your Dangerfile.
+
+  # @example Ensure all python files inside the current directory follow the PEP 8 rules
   #
-  # To be published on the Danger plugins site, you will need to have
-  # the public interface documented. Danger uses [YARD](http://yardoc.org/)
-  # for generating documentation from your plugin source, and you can verify
-  # by running `danger plugins lint` or `bundle exec rake spec`.
+  #          pep8.lint
   #
-  # You should replace these comments with a public description of your library.
-  #
-  # @example Ensure people are well warned about merging on Mondays
-  #
-  #          my_plugin.warn_on_mondays
-  #
-  # @see  Gustavo Barbosa/danger-pep8
-  # @tags monday, weekends, time, rattata
+  # @see  loadsmart/danger-pep8
+  # @tags lint, python, pep8, code, style
   #
   class DangerPep8 < Plugin
 
-    # An attribute that you can read/write from your Dangerfile
-    #
-    # @return   [Array<String>]
-    attr_accessor :my_attribute
+    MARKDOWN_TEMPLATE = %{
+      PEP 8 issues found
+      | File | Line | Column | Reason |\n
+      |------|------|--------|--------|\n
+    }
 
-    # A method that you can call from your Dangerfile
-    # @return   [Array<String>]
+    attr_accessor :config_file
+
+    # Lint all python files inside the current directory
+    # @return [void]
     #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+    def lint(path=".")
+      ensure_flake8_is_installed
+
+      errors = run_flake_on_path(path)
+      return if errors.empty?
+
+      markdown = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
+        file, line, column, reason = error_line.split(":")
+        out += "| #{file} | #{line} | #{column} | #{reason.gsub("'", "`")} |\n"
+      end
+
+      message(markdown)
+    end
+
+    private
+
+    def run_flake_on_path(path)
+      command = "flake8 #{path}"
+      command << " --config #{config_file}" if config_file
+      `#{run_flake_with_config_file}`.split("\n")
+    end
+
+    def ensure_flake8_is_installed
+      system "pip install --user flake8" unless flake8_installed?
+    end
+
+    def flake8_installed?
+      `which flake8`.strip.empty? == false
     end
   end
 end
