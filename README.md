@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/loadsmart/danger-pep8.svg?style=svg)](https://circleci.com/gh/loadsmart/danger-pep8)
+
 # danger-pep8
 
 A description of danger-pep8.
@@ -25,7 +27,7 @@ MIT
 
 ## TODO
 - [x] write specs
-- [ ] configure ci build
+- [x] configure ci build
 - [ ] add code comments
 - [ ] create a changelog
 - [ ] fill out readme.md
