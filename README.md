@@ -24,10 +24,10 @@ A description of danger-pep8.
 MIT
 
 ## TODO
-- [ ] write specs
+- [x] write specs
+- [ ] configure ci build
 - [ ] add code comments
 - [ ] create a changelog
-- [ ] configure ci build
 - [ ] fill out readme.md
 - [ ] open source it
 - [ ] publish gem

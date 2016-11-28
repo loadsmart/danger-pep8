@@ -10,10 +10,10 @@ module Danger
   class DangerPep8 < Plugin
 
     MARKDOWN_TEMPLATE = %{
-      ## DangerPep8 found issues
+    ## DangerPep8 found issues
 
-      | File | Line | Column | Reason |\n
-      |------|------|--------|--------|\n
+    | File | Line | Column | Reason |\n
+    |------|------|--------|--------|\n
     }
 
     attr_accessor :config_file
@@ -27,12 +27,12 @@ module Danger
       errors = run_flake_on_path(path)
       return if errors.empty?
 
-      markdown = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
+      report = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
         file, line, column, reason = error_line.split(":")
-        out += "| #{file} | #{line} | #{column} | #{reason.gsub("'", "`")} |\n"
+        out += "| #{file} | #{line} | #{column} | #{reason.strip.gsub("'", "`")} |\n"
       end
 
-      message(markdown)
+      markdown(report)
     end
 
     private
@@ -40,7 +40,7 @@ module Danger
     def run_flake_on_path(path)
       command = "flake8 #{path}"
       command << " --config #{config_file}" if config_file
-      `#{run_flake_with_config_file}`.split("\n")
+      `#{command}`.split("\n")
     end
 
     def ensure_flake8_is_installed
