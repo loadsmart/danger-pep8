@@ -10,7 +10,8 @@ module Danger
   class DangerPep8 < Plugin
 
     MARKDOWN_TEMPLATE = %{
-      PEP 8 issues found
+      ## DangerPep8 found issues
+
       | File | Line | Column | Reason |\n
       |------|------|--------|--------|\n
     }
