@@ -1,3 +1,5 @@
+⚠️ Note: This plugin is still under heavy development 👷
+
 [![CircleCI](https://circleci.com/gh/loadsmart/danger-pep8.svg?style=svg)](https://circleci.com/gh/loadsmart/danger-pep8)
 
 # danger-pep8
