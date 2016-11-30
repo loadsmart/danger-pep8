@@ -59,7 +59,32 @@ module Danger
           expect(markdown.message).to include("| ./tests/test_matcher.py | 90 | 9 | E128 continuation line under-indented for visual indent |")
           expect(markdown.message).to include("| ./tests/test_matcher.py | 94 | 1 | E305 expected 2 blank lines after class or function definition, found 1 |")
         end
-        
+
+        it 'handles errors showing only count' do
+          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
+
+          @pep8.count_errors
+
+          warning_message = @pep8.status_report[:warnings].first
+          expect(warning_message).to include("We found 10 PEP8 issues")
+        end
+
+        it 'should not report for count_errors if total errors is bellow configured threshold' do
+          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
+
+          @pep8.max_errors = 20
+          @pep8.count_errors
+
+          expect(@pep8.status_report[:warnings]).to be_empty
+        end
+
+        it 'should not report anything if there is no erroro' do
+          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("")
+
+          @pep8.count_errors
+
+          expect(@pep8.status_report[:warnings]).to be_empty
+        end
       end
       
     end
