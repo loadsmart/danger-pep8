@@ -17,6 +17,11 @@ module Danger
     }
 
     attr_accessor :config_file
+    attr_writer :max_errors
+
+    def max_errors
+      @max_errors || 0
+    end
 
     # Lint all python files inside the current directory
     # @return [void]
@@ -35,11 +40,25 @@ module Danger
       markdown(report)
     end
 
+    # Triggers a warning if total lint errors found exceedes @max_errors threshold
+    # @return [void]
+    #
+    def count_errors(path=".")
+      ensure_flake8_is_installed
+
+      total_errors = run_flake_on_path(path, :count => true).first.to_i
+      if total_errors > 0 and total_errors >= self.max_errors
+        warn("We found #{total_errors} PEP8 issues")
+      end
+    end
+
     private
 
-    def run_flake_on_path(path)
+    def run_flake_on_path(path, options = {})
       command = "flake8 #{path}"
       command << " --config #{config_file}" if config_file
+      # We need quiet flag 2 times to return only the count
+      command << " --quiet --quiet --count" if options[:count]
       `#{command}`.split("\n")
     end
 
