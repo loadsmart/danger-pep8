@@ -30,8 +30,8 @@ MIT
 ## TODO
 - [x] write specs
 - [x] configure ci build
+- [x] create a changelog
 - [ ] add code comments
-- [ ] create a changelog
 - [ ] fill out readme.md
 - [ ] open source it
 - [ ] publish gem
