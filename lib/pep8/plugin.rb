@@ -27,7 +27,7 @@ module Danger
 
       report = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
         file, line, column, reason = error_line.split(":")
-        out += "| #{file} | #{line} | #{column} | #{reason.strip.gsub("'", "`")} |\n"
+        out += "| #{short_link(file, line)} | #{line} | #{column} | #{reason.strip.gsub("'", "`")} |\n"
       end
 
       markdown(report)
@@ -47,6 +47,14 @@ module Danger
 
     def flake8_installed?
       `which flake8`.strip.empty? == false
+    end
+
+    def short_link(file, line)
+      if danger.scm_provider.to_s == "github"
+        return github.html_link("#{file}#L#{line}", full_path: false)
+      end
+
+      file
     end
   end
 end
