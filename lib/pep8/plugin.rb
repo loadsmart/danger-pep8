@@ -9,12 +9,10 @@ module Danger
   #
   class DangerPep8 < Plugin
 
-    MARKDOWN_TEMPLATE = %{
-    ## DangerPep8 found issues
-
-    | File | Line | Column | Reason |\n
-    |------|------|--------|--------|\n
-    }
+    MARKDOWN_TEMPLATE = ""\
+      "## DangerPep8 found issues\n\n"\
+      "| File | Line | Column | Reason |\n"\
+      "|------|------|--------|--------|\n"\
 
     attr_accessor :config_file
 
