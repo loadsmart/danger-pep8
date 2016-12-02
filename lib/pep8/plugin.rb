@@ -1,8 +1,21 @@
 module Danger
 
-  # @example Ensure all python files inside the current directory follow the PEP 8 rules
+  # Find [PEP 8](https://www.python.org/dev/peps/pep-0008/) issues in python files.
+  #
+  # This is done using the [flake8](https://pypi.python.org/pypi/flake8) python egg.
+  # Results are passed out as a markdown table.
+  #
+  # @example Lint files inside the current directory
   #
   #          pep8.lint
+  #
+  # @example Lint files inside a given directory
+  #
+  #          pep8.lint "src"
+  #
+  # @example Warns if number of issues is greater than a given threshold
+  #
+  #          #TODO
   #
   # @see  loadsmart/danger-pep8
   # @tags lint, python, pep8, code, style
@@ -21,7 +34,7 @@ module Danger
       @max_errors || 0
     end
 
-    # Lint all python files inside the current directory
+    # Lint all python files inside a given directory. Defaults to "."
     # @return [void]
     #
     def lint(path=".")
@@ -46,7 +59,7 @@ module Danger
 
       total_errors = run_flake_on_path(path, :count => true).first.to_i
       if total_errors > 0 and total_errors >= self.max_errors
-        warn("We found #{total_errors} PEP8 issues")
+        warn("#{total_errors} PEP 8 issues were found")
       end
     end
 
