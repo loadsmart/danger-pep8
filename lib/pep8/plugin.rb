@@ -59,7 +59,7 @@ module Danger
 
       total_errors = run_flake_on_path(path, :count => true).first.to_i
       if total_errors > 0 and total_errors >= self.max_errors
-        warn("#{total_errors} PEP 8 issues were found")
+        warn("#{total_errors} PEP 8 issues found")
       end
     end
 

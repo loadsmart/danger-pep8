@@ -84,7 +84,7 @@ module Danger
           @pep8.count_errors
 
           warning_message = @pep8.status_report[:warnings].first
-          expect(warning_message).to include("We found 10 PEP8 issues")
+          expect(warning_message).to include("10 PEP 8 issues found")
         end
 
         it 'should not report for count_errors if total errors is bellow configured threshold' do
