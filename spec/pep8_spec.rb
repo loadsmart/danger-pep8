@@ -30,7 +30,9 @@ module Danger
 
         it 'runs lint from a custom directory' do
           expect(@pep8).to receive(:`).with("flake8 my/custom/directory").and_return("")
-          @pep8.lint "my/custom/directory"
+
+          @pep8.base_dir = "my/custom/directory"
+          @pep8.lint
         end
 
         it 'handles a custom config file' do
@@ -46,7 +48,7 @@ module Danger
         end
 
         context 'when running on github' do
-          it 'handles a lint with errors' do
+          it 'handles a lint with errors count greater than threshold' do
             lint_report = "./tests/test_matcher.py:90:9: E128 continuation line under-indented for visual indent\n"
 
             allow(@pep8).to receive(:`).with("flake8 .").and_return(lint_report)
@@ -76,6 +78,18 @@ module Danger
             expect(markdown.message).to include("## DangerPep8 found issues")
             expect(markdown.message).to include("| ./tests/test_matcher.py | 90 | 9 | E128 continuation line under-indented for visual indent |")
           end
+
+          it 'handles a lint with errors count lesser than threshold' do
+            lint_report = "./tests/test_matcher.py:90:9: E128 continuation line under-indented for visual indent\n"
+
+            allow(@pep8).to receive(:`).with("flake8 .").and_return(lint_report)
+
+            @pep8.threshold = 5
+            @pep8.lint
+
+            expect(@pep8.status_report[:markdowns].first).to be_nil
+          end
+
         end
 
         it 'handles errors showing only count' do
@@ -90,7 +104,7 @@ module Danger
         it 'should not report for count_errors if total errors is bellow configured threshold' do
           allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
 
-          @pep8.max_errors = 20
+          @pep8.threshold = 20
           @pep8.count_errors
 
           expect(@pep8.status_report[:warnings]).to be_empty

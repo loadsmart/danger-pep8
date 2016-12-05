@@ -11,7 +11,8 @@ module Danger
   #
   # @example Lint files inside a given directory
   #
-  #          pep8.lint "src"
+  #          pep8.base_dir "src"
+  #          pep8.lint
   #
   # @example Warns if number of issues is greater than a given threshold
   #
@@ -28,20 +29,26 @@ module Danger
       "|------|------|--------|--------|\n"\
 
     attr_accessor :config_file
-    attr_writer :max_errors
 
-    def max_errors
-      @max_errors || 0
+    attr_writer :base_dir
+    attr_writer :threshold
+
+    def base_dir
+      @base_dir || "."
+    end
+
+    def threshold
+      @threshold || 0
     end
 
     # Lint all python files inside a given directory. Defaults to "."
     # @return [void]
     #
-    def lint(path=".")
+    def lint
       ensure_flake8_is_installed
 
-      errors = run_flake_on_path(path)
-      return if errors.empty?
+      errors = run_flake
+      return if errors.empty? || errors.count <= threshold
 
       report = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
         file, line, column, reason = error_line.split(":")
@@ -51,22 +58,22 @@ module Danger
       markdown(report)
     end
 
-    # Triggers a warning if total lint errors found exceedes @max_errors threshold
+    # Triggers a warning if total lint errors found exceedes @threshold
     # @return [void]
     #
-    def count_errors(path=".")
+    def count_errors
       ensure_flake8_is_installed
 
-      total_errors = run_flake_on_path(path, :count => true).first.to_i
-      if total_errors > 0 and total_errors >= self.max_errors
+      total_errors = run_flake(:count => true).first.to_i
+      if total_errors > 0 and total_errors >= self.threshold
         warn("#{total_errors} PEP 8 issues found")
       end
     end
 
     private
 
-    def run_flake_on_path(path, options = {})
-      command = "flake8 #{path}"
+    def run_flake(options = {})
+      command = "flake8 #{base_dir}"
       command << " --config #{config_file}" if config_file
       # We need quiet flag 2 times to return only the count
       command << " --quiet --quiet --count" if options[:count]
