@@ -1,4 +1,4 @@
-Copyright (c) 2016 Gustavo Barbosa <gustavocsb@gmail.com>
+Copyright (c) 2016 Loadsmart, Inc.
 
 MIT License
 
