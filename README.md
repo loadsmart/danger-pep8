@@ -86,6 +86,6 @@ MIT
 - [x] create a changelog
 - [x] add code comments
 - [x] fill out readme.md
-- [ ] open source it
+- [x] open source it
 - [ ] publish gem
 - [ ] send MR to danger.systems
