@@ -16,7 +16,13 @@ module Danger
   #
   # @example Warns if number of issues is greater than a given threshold
   #
-  #          #TODO
+  #          pep8.threshold = 10
+  #          pep8.count_errors
+  #
+  # @example Fails if number of issues is greater than a given threshold
+  #
+  #          pep8.threshold = 10
+  #          pep8.count_errors(should_fail: true)
   #
   # @see  loadsmart/danger-pep8
   # @tags lint, python, pep8, code, style
@@ -28,18 +34,22 @@ module Danger
       "| File | Line | Column | Reason |\n"\
       "|------|------|--------|--------|\n"\
 
+    # A custom configuration file to run with flake8
+    # By default, flake will look for setup.cfg, tox.ini, or .flake8
+    # inside the current directory or your top-level user directory
+    # @see http://flake8.pycqa.org/en/latest/user/configuration.html#configuration-locations
+    # @return [String]
     attr_accessor :config_file
 
+    # Root directory from where flake8 will run.
+    # Defaults to current directory.
+    # @return [String]
     attr_writer :base_dir
+
+    # Max number of issues allowed.
+    # If number of issues is lesser than the threshold, nothing happens.
+    # @return [Int]
     attr_writer :threshold
-
-    def base_dir
-      @base_dir || "."
-    end
-
-    def threshold
-      @threshold || 0
-    end
 
     # Lint all python files inside a given directory. Defaults to "."
     # @return [void]
@@ -58,16 +68,28 @@ module Danger
       markdown(report)
     end
 
-    # Triggers a warning if total lint errors found exceedes @threshold
+    # Triggers a warning/failure if total lint errors found exceedes @threshold
+    # @param [Bool] should_fail
+    #        A flag to indicate whether it should warn ou fail the build.
+    #        It adds an entry on the corresponding warnings/failures table. 
     # @return [void]
     #
-    def count_errors
+    def count_errors(should_fail = false)
       ensure_flake8_is_installed
 
       total_errors = run_flake(:count => true).first.to_i
-      if total_errors > 0 and total_errors >= self.threshold
-        warn("#{total_errors} PEP 8 issues found")
+      if total_errors > 0 and total_errors >= threshold
+        message = "#{total_errors} PEP 8 issues found"
+        should_fail ? fail(message) : warn(message)
       end
+    end
+
+    def base_dir
+      @base_dir || "."
+    end
+
+    def threshold
+      @threshold || 0
     end
 
     private

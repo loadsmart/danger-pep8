@@ -31,7 +31,7 @@ MIT
 - [x] write specs
 - [x] configure ci build
 - [x] create a changelog
-- [ ] add code comments
+- [x] add code comments
 - [ ] fill out readme.md
 - [ ] open source it
 - [ ] publish gem
