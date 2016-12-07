@@ -24,7 +24,7 @@ gem 'danger-pep8'
 
 ### Basic
 
-Check for issues running `flake8` script from current directory. Prints a markdown table with all issues found:
+Check for issues running the script from current directory. Prints a markdown table with all issues found:
 ```rb
 pep8.lint
 ```
@@ -86,6 +86,6 @@ MIT
 - [x] create a changelog
 - [x] add code comments
 - [x] fill out readme.md
-- [ ] open source it
+- [x] open source it
 - [ ] publish gem
 - [ ] send MR to danger.systems
