@@ -78,7 +78,7 @@ module Danger
       ensure_flake8_is_installed
 
       total_errors = run_flake(:count => true).first.to_i
-      if total_errors > 0 and total_errors >= threshold
+      if total_errors > threshold
         message = "#{total_errors} PEP 8 issues found"
         should_fail ? fail(message) : warn(message)
       end
