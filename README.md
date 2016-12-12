@@ -79,13 +79,3 @@ pep8.count_errors(should_fail = true)
 ## License
 
 MIT
-
-## TODO
-- [x] write specs
-- [x] configure ci build
-- [x] create a changelog
-- [x] add code comments
-- [x] fill out readme.md
-- [x] open source it
-- [ ] publish gem
-- [ ] send MR to danger.systems
