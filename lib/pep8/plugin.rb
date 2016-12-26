@@ -11,7 +11,7 @@ module Danger
   #
   # @example Lint files inside a given directory
   #
-  #          pep8.base_dir "src"
+  #          pep8.base_dir = "src"
   #          pep8.lint
   #
   # @example Warns if number of issues is greater than a given threshold
