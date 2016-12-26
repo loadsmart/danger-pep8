@@ -39,6 +39,12 @@ pep8.base_dir = "src"
 pep8.lint
 ```
 
+#### Use GitHub's inline comments instead of a markdown table
+
+```rb
+pep8.lint(use_inline_comments=true)
+```
+
 #### Running using a configuration file different than the usual
 
 If you need to specify a different configuration file, use the `config_file` parameter below. Check [this link](http://flake8.pycqa.org/en/latest/user/configuration.html#configuration-locations) for more information about Configuration Locations.
@@ -79,13 +85,3 @@ pep8.count_errors(should_fail = true)
 ## License
 
 MIT
-
-## TODO
-- [x] write specs
-- [x] configure ci build
-- [x] create a changelog
-- [x] add code comments
-- [x] fill out readme.md
-- [x] open source it
-- [ ] publish gem
-- [ ] send MR to danger.systems
