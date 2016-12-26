@@ -23,28 +23,40 @@ module Danger
           allow(@pep8).to receive(:`).with("which flake8").and_return("/usr/bin/flake8")
         end
 
-        it 'runs lint from current directory by default' do
-          expect(@pep8).to receive(:`).with("flake8 .").and_return("")
-          @pep8.lint
-        end
+        describe 'lint' do
+          it 'runs lint from current directory by default' do
+            expect(@pep8).to receive(:`).with("flake8 .").and_return("")
+            @pep8.lint
+          end
 
-        it 'runs lint from a custom directory' do
-          expect(@pep8).to receive(:`).with("flake8 my/custom/directory").and_return("")
+          it 'runs lint from a custom directory' do
+            expect(@pep8).to receive(:`).with("flake8 my/custom/directory").and_return("")
 
-          @pep8.base_dir = "my/custom/directory"
-          @pep8.lint
-        end
+            @pep8.base_dir = "my/custom/directory"
+            @pep8.lint
+          end
 
-        it 'handles a custom config file' do
-          expect(@pep8).to receive(:`).with("flake8 . --config my-pep8-config").and_return("")
-          @pep8.config_file = "my-pep8-config"
-          @pep8.lint
-        end
+          it 'handles a custom config file' do
+            expect(@pep8).to receive(:`).with("flake8 . --config my-pep8-config").and_return("")
+            @pep8.config_file = "my-pep8-config"
+            @pep8.lint
+          end
 
-        it 'handles a lint with no errors' do
-          allow(@pep8).to receive(:`).with("flake8 .").and_return("")
-          @pep8.lint
-          expect(@pep8.status_report[:markdowns].first).to be_nil
+          it 'handles a lint with no errors' do
+            allow(@pep8).to receive(:`).with("flake8 .").and_return("")
+            @pep8.lint
+            expect(@pep8.status_report[:markdowns].first).to be_nil
+          end
+
+          it 'comments inline properly' do
+            lint_report = "./tests/test_matcher.py:90:9: E128 continuation line under-indented for visual indent\n"
+            allow(@pep8).to receive(:`).with("flake8 .").and_return(lint_report)
+
+            @pep8.lint(use_inline_comments=true)
+
+            message = @pep8.status_report[:messages].first
+            expect(message).to eq('E128 continuation line under-indented for visual indent')
+          end
         end
 
         context 'when running on github' do
@@ -89,33 +101,34 @@ module Danger
 
             expect(@pep8.status_report[:markdowns].first).to be_nil
           end
-
         end
 
-        it 'handles errors showing only count' do
-          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
+        describe 'count_errors' do
+          it 'handles errors showing only count' do
+            allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
 
-          @pep8.count_errors
+            @pep8.count_errors
 
-          warning_message = @pep8.status_report[:warnings].first
-          expect(warning_message).to include("10 PEP 8 issues found")
-        end
+            warning_message = @pep8.status_report[:warnings].first
+            expect(warning_message).to include("10 PEP 8 issues found")
+          end
 
-        it 'should not report for count_errors if total errors is bellow configured threshold' do
-          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
+          it 'should not report for count_errors if total errors is bellow configured threshold' do
+            allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("10")
 
-          @pep8.threshold = 20
-          @pep8.count_errors
+            @pep8.threshold = 20
+            @pep8.count_errors
 
-          expect(@pep8.status_report[:warnings]).to be_empty
-        end
+            expect(@pep8.status_report[:warnings]).to be_empty
+          end
 
-        it 'should not report anything if there is no error' do
-          allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("")
+          it 'should not report anything if there is no error' do
+            allow(@pep8).to receive(:`).with("flake8 . --quiet --quiet --count").and_return("")
 
-          @pep8.count_errors
+            @pep8.count_errors
 
-          expect(@pep8.status_report[:warnings]).to be_empty
+            expect(@pep8.status_report[:warnings]).to be_empty
+          end
         end
 
       end

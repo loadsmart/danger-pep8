@@ -54,27 +54,26 @@ module Danger
     # Lint all python files inside a given directory. Defaults to "."
     # @return [void]
     #
-    def lint
+    def lint(use_inline_comments=false)
       ensure_flake8_is_installed
 
       errors = run_flake
       return if errors.empty? || errors.count <= threshold
 
-      report = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
-        file, line, column, reason = error_line.split(":")
-        out += "| #{short_link(file, line)} | #{line} | #{column} | #{reason.strip.gsub("'", "`")} |\n"
+      if use_inline_comments
+        comment_inline(errors)
+      else
+        print_markdown_table(errors)
       end
-
-      markdown(report)
     end
 
     # Triggers a warning/failure if total lint errors found exceedes @threshold
     # @param [Bool] should_fail
     #        A flag to indicate whether it should warn ou fail the build.
-    #        It adds an entry on the corresponding warnings/failures table. 
+    #        It adds an entry on the corresponding warnings/failures table.
     # @return [void]
     #
-    def count_errors(should_fail = false)
+    def count_errors(should_fail=false)
       ensure_flake8_is_installed
 
       total_errors = run_flake(:count => true).first.to_i
@@ -108,6 +107,22 @@ module Danger
 
     def flake8_installed?
       `which flake8`.strip.empty? == false
+    end
+
+    def print_markdown_table(errors=[])
+      report = errors.inject(MARKDOWN_TEMPLATE) do |out, error_line|
+        file, line, column, reason = error_line.split(":")
+        out += "| #{short_link(file, line)} | #{line} | #{column} | #{reason.strip.gsub("'", "`")} |\n"
+      end
+
+      markdown(report)
+    end
+
+    def comment_inline(errors=[])
+      errors.each do |error|
+        file, line, column, reason = error.split(":")
+        message(reason.strip.gsub("'", "`"), file: file, line: line)
+      end
     end
 
     def short_link(file, line)
