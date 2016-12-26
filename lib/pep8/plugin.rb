@@ -103,7 +103,7 @@ module Danger
     end
 
     def ensure_flake8_is_installed
-      system "pip install --user flake8" unless flake8_installed?
+      system "pip install --user flake8 --upgrade" unless flake8_installed?
     end
 
     def flake8_installed?
