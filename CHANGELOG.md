@@ -1,3 +1,6 @@
+## 0.0.5
+- Bump yarn and rubocop versions due to security issues ([@barbosa](https://github.com/barbosa))
+
 ## 0.0.4
 - Convert line number to integer on inline comment (@fmartingr)
 
