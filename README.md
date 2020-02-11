@@ -1,5 +1,7 @@
 [![CircleCI](https://circleci.com/gh/loadsmart/danger-pep8.svg?style=svg)](https://circleci.com/gh/loadsmart/danger-pep8)
 
+**IMPORTANT: This repository is not being maintained anymore.**
+
 # danger-pep8
 
 Find [PEP 8](https://www.python.org/dev/peps/pep-0008/) issues in python files.
